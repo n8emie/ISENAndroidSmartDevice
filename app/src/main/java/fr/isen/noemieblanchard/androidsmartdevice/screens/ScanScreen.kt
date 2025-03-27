@@ -46,14 +46,18 @@ import android.bluetooth.le.ScanResult
 import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.MutableState
+import androidx.lifecycle.viewmodel.compose.viewModel
+import fr.isen.noemieblanchard.androidsmartdevice.DeviceControlActivity
 import fr.isen.noemieblanchard.androidsmartdevice.MainActivity
+import fr.isen.noemieblanchard.androidsmartdevice.ScanActivity
+import fr.isen.noemieblanchard.androidsmartdevice.objects.BleDevice
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.absoluteValue
 
 
-data class BleDevice(val signal: MutableState<String>, val name: String, val macAddress: String)
+
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -65,7 +69,6 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
     val coroutineScope = rememberCoroutineScope()
     var isScanning by remember { mutableStateOf(false) }
     var scannedDevices by remember { mutableStateOf(emptyList<BleDevice>()) }
-
 
     val permissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions()
@@ -168,18 +171,24 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
 
         LazyColumn(modifier = Modifier.padding(16.dp)) {
             items(scannedDevices) { device ->
-                DeviceCard(device)
+                DeviceCard(
+                    device = device,
+                    onClick = {val intent = Intent(context, DeviceControlActivity::class.java)
+                        context.startActivity(intent)
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-fun DeviceCard(device: BleDevice) {
+fun DeviceCard(device: BleDevice,  onClick: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 8.dp)
+            .clickable{ onClick() },
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {

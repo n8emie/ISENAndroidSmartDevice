@@ -2,7 +2,10 @@ package fr.isen.noemieblanchard.androidsmartdevice.objects
 
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothGatt
+import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothManager
+import android.bluetooth.BluetoothProfile
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
@@ -17,7 +20,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
-import fr.isen.noemieblanchard.androidsmartdevice.screens.BleDevice
+import fr.isen.noemieblanchard.androidsmartdevice.objects.BleDevice
 import kotlinx.coroutines.CoroutineScope
 
 
@@ -26,6 +29,7 @@ class ScreenScanInteraction(private val context: Context) {
         (context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
     private val bluetoothLeScanner: BluetoothLeScanner? = bluetoothAdapter?.bluetoothLeScanner
     private val scanHandler = Handler(Looper.getMainLooper())
+    private var bluetoothGatt: BluetoothGatt? = null
 
     private var scanCallback: ScanCallback? = null // Conserver la référence
     var isScanning = false
@@ -120,7 +124,8 @@ class ScreenScanInteraction(private val context: Context) {
                         val newDevice = BleDevice(
                             signal = mutableStateOf(result.rssi.toString()), // Modified line
                             name = device.name ?: "Unknown",
-                            macAddress = device.address
+                            macAddress = device.address,
+                            bluetoothDevice = device
                         )
                         if (!device.name.isNullOrBlank() && scannedDevices.none { it.macAddress == newDevice.macAddress }) {
                             scannedDevices.add(newDevice)
@@ -160,4 +165,5 @@ class ScreenScanInteraction(private val context: Context) {
             }
         }
     }
+
 }
