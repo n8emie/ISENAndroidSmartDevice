@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">AndroidSmartDevice</string>
+    <string name="app_name">Android Smart Device</string>
     <string name="title_activity_scan">ScanActivity</string>
 </resources>

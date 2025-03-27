@@ -45,10 +45,15 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Intent
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import fr.isen.noemieblanchard.androidsmartdevice.MainActivity
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.math.absoluteValue
 
 
-data class BleDevice(val signal: String, val name: String, val macAddress: String)
+data class BleDevice(val signal: MutableState<String>, val name: String, val macAddress: String)
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -87,7 +92,7 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
     LaunchedEffect(isScanning) {
         if (isScanning) {
             interaction.startBleScan(coroutineScope) { devices ->
-                scannedDevices = devices.filter { it.name.isNotEmpty() && it.name.lowercase() != "unknown" }
+                scannedDevices = devices.map{BleDevice(it.signal, it.name, it.macAddress)}
             }
         }
     }
@@ -103,6 +108,7 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
         ) {
             Text(context.getString(R.string.app_name), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
         }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Row(
@@ -187,7 +193,7 @@ fun DeviceCard(device: BleDevice) {
                 modifier = Modifier.size(40.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
-                    Text(text = device.name, color = Color.White, fontSize = 14.sp)
+                    Text(text = device.signal.value, color = Color.White, fontSize = 14.sp)
                 }
             }
             Spacer(modifier = Modifier.width(16.dp))

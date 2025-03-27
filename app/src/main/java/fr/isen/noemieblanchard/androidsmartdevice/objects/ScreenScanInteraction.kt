@@ -15,6 +15,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
 import fr.isen.noemieblanchard.androidsmartdevice.screens.BleDevice
 import kotlinx.coroutines.CoroutineScope
@@ -83,21 +84,24 @@ class ScreenScanInteraction(private val context: Context) {
 
 
     fun requestPermissionsAtStart(onPermissionsGranted: () -> Unit) {
+        val permissionsToRequest = mutableListOf(Manifest.permission.ACCESS_FINE_LOCATION)
         if (hasBluetoothPermission()) {
             onPermissionsGranted()
         } else {
-            val permissionsToRequest = mutableListOf<String>()
+
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
                 permissionsToRequest.add(Manifest.permission.BLUETOOTH_SCAN)
                 permissionsToRequest.add(Manifest.permission.BLUETOOTH_CONNECT)
             } else {
-                permissionsToRequest.add(Manifest.permission.ACCESS_FINE_LOCATION)
+                permissionsToRequest.add(Manifest.permission.BLUETOOTH)
+                permissionsToRequest.add(Manifest.permission.BLUETOOTH_ADMIN)
             }
 
             requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
         }
     }
+
     fun startBleScan(coroutineScope: CoroutineScope, updateDevices: (List<BleDevice>) -> Unit) {
         if (!hasBluetoothPermission()) {
             requestBluetoothPermissions()
@@ -111,9 +115,14 @@ class ScreenScanInteraction(private val context: Context) {
 
             scanCallback = object : ScanCallback() { // Initialiser le callback
                 override fun onScanResult(callbackType: Int, result: ScanResult?) {
+
                     result?.device?.let { device ->
-                        val newDevice = BleDevice(result.rssi.toString(), device.name ?: "Unknown", device.address)
-                        if (scannedDevices.none { it.macAddress == newDevice.macAddress }) {
+                        val newDevice = BleDevice(
+                            signal = mutableStateOf(result.rssi.toString()), // Modified line
+                            name = device.name ?: "Unknown",
+                            macAddress = device.address
+                        )
+                        if (!device.name.isNullOrBlank() && scannedDevices.none { it.macAddress == newDevice.macAddress }) {
                             scannedDevices.add(newDevice)
                             updateDevices(scannedDevices)
                             Log.d("BLE_SCAN", "Device found: ${newDevice.name}, ${newDevice.macAddress}, RSSI: ${newDevice.signal}")
