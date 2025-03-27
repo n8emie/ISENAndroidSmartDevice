@@ -87,7 +87,7 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
     LaunchedEffect(isScanning) {
         if (isScanning) {
             interaction.startBleScan(coroutineScope) { devices ->
-                scannedDevices = devices
+                scannedDevices = devices.filter { it.name.isNotEmpty() && it.name.lowercase() != "unknown" }
             }
         }
     }
@@ -160,35 +160,40 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
 
         Divider()
 
-        Column(modifier = Modifier.padding(16.dp)) {
-            scannedDevices.forEach { device ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
-                ) {
-                    Row(
-                        modifier = Modifier.padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Surface(
-                            shape = CircleShape,
-                            color = Color(0xFF90CAF9),
-                            modifier = Modifier.size(40.dp)
-                        ) {
-                            Box(contentAlignment = Alignment.Center) {
-                                Text(text = device.name, color = Color.White, fontSize = 14.sp)
-                            }
-                        }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Column {
-                            Text(text = device.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                            Text(text = device.macAddress, fontSize = 14.sp, color = Color.Gray)
-                        }
-                    }
+        LazyColumn(modifier = Modifier.padding(16.dp)) {
+            items(scannedDevices) { device ->
+                DeviceCard(device)
+            }
+        }
+    }
+}
+
+@Composable
+fun DeviceCard(device: BleDevice) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        shape = RoundedCornerShape(8.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Surface(
+                shape = CircleShape,
+                color = Color(0xFF90CAF9),
+                modifier = Modifier.size(40.dp)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Text(text = device.name, color = Color.White, fontSize = 14.sp)
                 }
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Column {
+                Text(text = device.name, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text(text = device.macAddress, fontSize = 14.sp, color = Color.Gray)
             }
         }
     }
