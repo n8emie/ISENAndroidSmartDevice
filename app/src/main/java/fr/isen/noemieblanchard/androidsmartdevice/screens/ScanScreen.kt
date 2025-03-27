@@ -45,10 +45,10 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Intent
 import android.util.Log
+import fr.isen.noemieblanchard.androidsmartdevice.MainActivity
 
 
-
-data class FakeBleDevice(val signal: String, val name: String, val macAddress: String)
+data class BleDevice(val signal: String, val name: String, val macAddress: String)
 
 
 @SuppressLint("CoroutineCreationDuringComposition")
@@ -59,7 +59,7 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
     val activityContext = LocalContext.current as? Activity
     val coroutineScope = rememberCoroutineScope()
     var isScanning by remember { mutableStateOf(false) }
-    var scannedDevices by remember { mutableStateOf(emptyList<FakeBleDevice>()) }
+    var scannedDevices by remember { mutableStateOf(emptyList<BleDevice>()) }
 
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -67,6 +67,9 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
     ) { permissions ->
         if (permissions.all { it.value }) {
             interaction.checkBluetoothAndStartScan { isScanning = true }
+        }else {
+            activityContext?.finish()
+            activityContext?.startActivity(Intent(context, MainActivity::class.java))
         }
     }
     LaunchedEffect(Unit) {
@@ -75,17 +78,13 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
 
     val enableBluetoothLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
-    ) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            isScanning = true
-        } else {
-            activityContext?.finish() // Close ScanActivity if Bluetooth is not enabled
-        }
+    ) {
+        activityContext?.finish()
+        activityContext?.startActivity(Intent(context, MainActivity::class.java))
     }
 
 
     LaunchedEffect(isScanning) {
-
         if (isScanning) {
             interaction.startBleScan(coroutineScope) { devices ->
                 scannedDevices = devices

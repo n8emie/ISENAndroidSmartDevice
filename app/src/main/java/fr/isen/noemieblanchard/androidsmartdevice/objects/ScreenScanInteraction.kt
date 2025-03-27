@@ -16,7 +16,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.core.content.ContextCompat
-import fr.isen.noemieblanchard.androidsmartdevice.screens.FakeBleDevice
+import fr.isen.noemieblanchard.androidsmartdevice.screens.BleDevice
 import kotlinx.coroutines.CoroutineScope
 
 
@@ -30,7 +30,7 @@ class ScreenScanInteraction(private val context: Context) {
     var isScanning = false
     var scanProgress = 0f
     val scanDuration = 10_000L // 10 secondes
-    var scannedDevices = mutableListOf<FakeBleDevice>()
+    var scannedDevices = mutableListOf<BleDevice>()
 
     private lateinit var requestPermissionLauncher: ActivityResultLauncher<Array<String>>
 
@@ -98,7 +98,7 @@ class ScreenScanInteraction(private val context: Context) {
             requestPermissionLauncher.launch(permissionsToRequest.toTypedArray())
         }
     }
-    fun startBleScan(coroutineScope: CoroutineScope, updateDevices: (List<FakeBleDevice>) -> Unit) {
+    fun startBleScan(coroutineScope: CoroutineScope, updateDevices: (List<BleDevice>) -> Unit) {
         if (!hasBluetoothPermission()) {
             requestBluetoothPermissions()
             return
@@ -112,7 +112,7 @@ class ScreenScanInteraction(private val context: Context) {
             scanCallback = object : ScanCallback() { // Initialiser le callback
                 override fun onScanResult(callbackType: Int, result: ScanResult?) {
                     result?.device?.let { device ->
-                        val newDevice = FakeBleDevice(result.rssi.toString(), device.name ?: "Unknown", device.address)
+                        val newDevice = BleDevice(result.rssi.toString(), device.name ?: "Unknown", device.address)
                         if (scannedDevices.none { it.macAddress == newDevice.macAddress }) {
                             scannedDevices.add(newDevice)
                             updateDevices(scannedDevices)
