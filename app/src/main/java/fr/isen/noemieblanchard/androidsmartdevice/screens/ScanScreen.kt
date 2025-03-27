@@ -1,6 +1,7 @@
 package fr.isen.noemieblanchard.androidsmartdevice.screens
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -53,17 +54,37 @@ data class FakeBleDevice(val signal: String, val name: String, val macAddress: S
 fun ScanScreen(interaction: ScreenScanInteraction) {
 
     val context = LocalContext.current
+    val activityContext = LocalContext.current as? Activity
     val coroutineScope = rememberCoroutineScope()
     var isScanning by remember { mutableStateOf(false) }
     var scannedDevices by remember { mutableStateOf(emptyList<FakeBleDevice>()) }
 
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        if (permissions.all { it.value }) {
+            interaction.checkBluetoothAndStartScan { isScanning = true }
+        }
+    }
+
+    val enableBluetoothLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            isScanning = true
+        }
+    }
+
     LaunchedEffect(isScanning) {
+        interaction.registerPermissionLauncher(permissionLauncher)
         if (isScanning) {
             interaction.startBleScan(coroutineScope) { devices ->
                 scannedDevices = devices
             }
         }
     }
+
 
     Column(modifier = Modifier.fillMaxSize()) {
         Box(
@@ -85,7 +106,25 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
             Text(
                 text = if (isScanning) "Scan BLE en cours ..." else "Lancer le Scan BLE",
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .padding(start = 8.dp)
+                    .clickable {
+                        if (isScanning) {
+                            interaction.stopBleScan()
+                            isScanning = false
+                        } else {
+                            interaction.requestPermissionsAtStart {
+                                interaction.checkBluetoothAndStartScan{
+                                    if (!interaction.hasBluetoothPermission() || interaction.bluetoothAdapter?.isEnabled == false) {
+                                        activityContext?.finish() // Close activity if Bluetooth is not enabled
+                                    } else {
+                                        isScanning = true
+                                    }
+                                }
+                            }
+                        }
+                    }
             )
             Icon(
                 painter = painterResource(id = if (isScanning) R.drawable.ic_pause else R.drawable.ic_play),
@@ -94,8 +133,20 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
                 modifier = Modifier
                     .padding(start = 8.dp)
                     .clickable {
-                        isScanning = !isScanning
-                        if (!isScanning) interaction.stopBleScan()
+                        if (isScanning) {
+                            interaction.stopBleScan()
+                            isScanning = false
+                        } else {
+                            interaction.requestPermissionsAtStart {
+                                interaction.checkBluetoothAndStartScan {
+                                    if (!interaction.hasBluetoothPermission() || interaction.bluetoothAdapter?.isEnabled == false) {
+                                        activityContext?.finish() // Close activity if Bluetooth is not enabled
+                                    } else {
+                                        isScanning = true
+                                    }
+                                }
+                            }
+                        }
                     }
             )
         }

@@ -21,7 +21,7 @@ import kotlinx.coroutines.CoroutineScope
 
 
 class ScreenScanInteraction(private val context: Context) {
-    private val bluetoothAdapter: BluetoothAdapter? =
+    val bluetoothAdapter: BluetoothAdapter? =
         (context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager).adapter
     private val bluetoothLeScanner: BluetoothLeScanner? = bluetoothAdapter?.bluetoothLeScanner
     private val scanHandler = Handler(Looper.getMainLooper())
@@ -48,13 +48,14 @@ class ScreenScanInteraction(private val context: Context) {
     }
 
     fun requestBluetoothPermissions() {
-        val permissionsToRequest = mutableListOf<String>()
+        val permissionsToRequest = mutableListOf(Manifest.permission.ACCESS_FINE_LOCATION)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             permissionsToRequest.add(Manifest.permission.BLUETOOTH_SCAN)
             permissionsToRequest.add(Manifest.permission.BLUETOOTH_CONNECT)
         } else {
-            permissionsToRequest.add(Manifest.permission.ACCESS_FINE_LOCATION)
+            permissionsToRequest.add(Manifest.permission.BLUETOOTH)
+            permissionsToRequest.add(Manifest.permission.BLUETOOTH_ADMIN)
         }
 
         if (permissionsToRequest.isNotEmpty()) {
