@@ -11,21 +11,18 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import fr.isen.noemieblanchard.androidsmartdevice.screens.MainScreen
+import fr.isen.noemieblanchard.androidsmartdevice.screens.ScanScreen
 import fr.isen.noemieblanchard.androidsmartdevice.ui.theme.AndroidSmartDeviceTheme
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import fr.isen.noemieblanchard.androidsmartdevice.objects.ScreenScanInteraction
 
-class MainActivity : ComponentActivity() {
+class ScanActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val screenInteraction = ScreenScanInteraction(this)
         setContent {
-            //val navController = rememberNavController()
-
-            MainScreen()
+            ScanScreen(screenInteraction)
         }
     }
 }
-
 
