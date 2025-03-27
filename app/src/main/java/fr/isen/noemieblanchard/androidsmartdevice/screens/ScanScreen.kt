@@ -2,6 +2,7 @@ package fr.isen.noemieblanchard.androidsmartdevice.screens
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.bluetooth.BluetoothAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -42,6 +43,7 @@ import androidx.compose.runtime.LaunchedEffect
 import fr.isen.noemieblanchard.androidsmartdevice.objects.ScreenScanInteraction
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
+import android.content.Intent
 import android.util.Log
 
 
@@ -67,17 +69,23 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
             interaction.checkBluetoothAndStartScan { isScanning = true }
         }
     }
+    LaunchedEffect(Unit) {
+        interaction.registerPermissionLauncher(permissionLauncher)
+    }
 
     val enableBluetoothLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
     ) { result ->
-        if (result.resultCode == android.app.Activity.RESULT_OK) {
+        if (result.resultCode == Activity.RESULT_OK) {
             isScanning = true
+        } else {
+            activityContext?.finish() // Close ScanActivity if Bluetooth is not enabled
         }
     }
 
+
     LaunchedEffect(isScanning) {
-        interaction.registerPermissionLauncher(permissionLauncher)
+
         if (isScanning) {
             interaction.startBleScan(coroutineScope) { devices ->
                 scannedDevices = devices
@@ -115,10 +123,10 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
                             isScanning = false
                         } else {
                             interaction.requestPermissionsAtStart {
-                                interaction.checkBluetoothAndStartScan{
-                                    if (!interaction.hasBluetoothPermission() || interaction.bluetoothAdapter?.isEnabled == false) {
-                                        activityContext?.finish() // Close activity if Bluetooth is not enabled
-                                    } else {
+                                if (interaction.bluetoothAdapter?.isEnabled == false) {
+                                    enableBluetoothLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+                                } else {
+                                    interaction.checkBluetoothAndStartScan {
                                         isScanning = true
                                     }
                                 }
@@ -138,10 +146,10 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
                             isScanning = false
                         } else {
                             interaction.requestPermissionsAtStart {
-                                interaction.checkBluetoothAndStartScan {
-                                    if (!interaction.hasBluetoothPermission() || interaction.bluetoothAdapter?.isEnabled == false) {
-                                        activityContext?.finish() // Close activity if Bluetooth is not enabled
-                                    } else {
+                                if (interaction.bluetoothAdapter?.isEnabled == false) {
+                                    enableBluetoothLauncher.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
+                                } else {
+                                    interaction.checkBluetoothAndStartScan {
                                         isScanning = true
                                     }
                                 }
