@@ -27,23 +27,23 @@ class ScreenDeviceInteraction(private val context: Context) {
     private var bluetoothDevice: BluetoothDevice? = null
     private var gatt: BluetoothGatt? = null
     private var ledChar: BluetoothGattCharacteristic? = null
-    private var notifCharButton1: BluetoothGattCharacteristic? = null
-    private var notifCharButton3: BluetoothGattCharacteristic? = null
+    var notifCharButton1: BluetoothGattCharacteristic? = null
+    var notifCharButton3: BluetoothGattCharacteristic? = null
 
-    private val ledStates = mutableStateListOf(false, false, false)
-    private val connectionState = mutableStateOf("Se connecter")
+    val ledStates = mutableStateListOf(false, false, false)
+    val connectionState = mutableStateOf("Se connecter")
 
-    private val counterButton1 = mutableStateOf(0)
-    private val counterButton3 = mutableStateOf(0)
+    val counterButton1 = mutableStateOf(0)
+    val counterButton3 = mutableStateOf(0)
 
-    private val isSubscribedButton1 = mutableStateOf(false)
-    private val isSubscribedButton3 = mutableStateOf(false)
+    val isSubscribedButton1 = mutableStateOf(false)
+    val isSubscribedButton3 = mutableStateOf(false)
 
     private var skipNextNotification1 = false
     private var skipNextNotification3 = false
 
 
-    private fun connectToDevice(address: String, name: String) {
+    fun connectToDevice(address: String, name: String) {
         connectionState.value = "En cours de connexion"
         val bluetoothManager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         val bluetoothAdapter = bluetoothManager.adapter
@@ -160,7 +160,7 @@ class ScreenDeviceInteraction(private val context: Context) {
 
 
 
-    private fun toggleLed(index: Int) {
+    fun toggleLed(index: Int) {
         val char = ledChar ?: run {
             Log.e("BLE", "LED characteristic is null.")
             return
@@ -201,7 +201,7 @@ class ScreenDeviceInteraction(private val context: Context) {
     }
 
 
-    private fun toggleNotificationsFor(
+    fun toggleNotificationsFor(
         characteristic: BluetoothGattCharacteristic?,
         enable: Boolean
     ) {

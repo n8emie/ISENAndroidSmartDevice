@@ -25,7 +25,16 @@ class DeviceControlActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val deviceAddress = intent.getStringExtra("DEVICE_ADDRESS")
+        val deviceName = intent.getStringExtra("DEVICE_NAME")
+
+        if (deviceAddress == null || deviceName == null) {
+            finish() // Close if no device is provided
+            return
+        }
+
         val screenInteraction = ScreenDeviceInteraction(this)
+        screenInteraction.connectToDevice(deviceAddress, deviceName)
 
         enableEdgeToEdge()
         setContent {

@@ -173,7 +173,11 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
             items(scannedDevices) { device ->
                 DeviceCard(
                     device = device,
-                    onClick = {val intent = Intent(context, DeviceControlActivity::class.java)
+                    onClick = {
+                        val intent = Intent(context, DeviceControlActivity::class.java).apply {
+                        putExtra("DEVICE_ADDRESS", device.macAddress)
+                        putExtra("DEVICE_NAME", device.name)
+                    }
                         context.startActivity(intent)
                     }
                 )
