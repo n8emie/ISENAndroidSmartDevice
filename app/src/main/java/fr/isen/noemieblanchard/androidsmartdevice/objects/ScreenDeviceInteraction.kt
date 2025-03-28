@@ -1,24 +1,15 @@
 package fr.isen.noemieblanchard.androidsmartdevice.objects
 
 
-import android.app.Application
-
-import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothManager
 import android.content.Context
-import android.content.Intent
 import android.util.Log
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
-import fr.isen.noemieblanchard.androidsmartdevice.DeviceControlActivity
-import kotlinx.coroutines.launch
 import java.util.UUID
 
 class ScreenDeviceInteraction(private val context: Context) {

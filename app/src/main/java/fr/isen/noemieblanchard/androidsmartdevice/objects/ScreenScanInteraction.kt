@@ -3,9 +3,7 @@ package fr.isen.noemieblanchard.androidsmartdevice.objects
 import android.Manifest
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothGatt
-import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothManager
-import android.bluetooth.BluetoothProfile
 import android.bluetooth.le.BluetoothLeScanner
 import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
@@ -20,7 +18,6 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.content.ContextCompat
-import fr.isen.noemieblanchard.androidsmartdevice.objects.BleDevice
 import kotlinx.coroutines.CoroutineScope
 
 
@@ -31,7 +28,7 @@ class ScreenScanInteraction(private val context: Context) {
     private val scanHandler = Handler(Looper.getMainLooper())
     private var bluetoothGatt: BluetoothGatt? = null
 
-    private var scanCallback: ScanCallback? = null // Conserver la référence
+    private var scanCallback: ScanCallback? = null
     var isScanning = false
     var scanProgress = 0f
     val scanDuration = 10_000L // 10 secondes
@@ -117,12 +114,12 @@ class ScreenScanInteraction(private val context: Context) {
             isScanning = true
             scanProgress = 0f
 
-            scanCallback = object : ScanCallback() { // Initialiser le callback
+            scanCallback = object : ScanCallback() {
                 override fun onScanResult(callbackType: Int, result: ScanResult?) {
 
                     result?.device?.let { device ->
                         val newDevice = BleDevice(
-                            signal = mutableStateOf(result.rssi.toString()), // Modified line
+                            signal = mutableStateOf(result.rssi.toString()),
                             name = device.name ?: "Unknown",
                             macAddress = device.address,
                             bluetoothDevice = device
@@ -155,8 +152,8 @@ class ScreenScanInteraction(private val context: Context) {
     fun stopBleScan() {
         if (isScanning) {
             try {
-                bluetoothLeScanner?.stopScan(scanCallback ?: object : ScanCallback(){}) //Utilise le callback stocké
-                scanCallback = null // Nettoyer la référence
+                bluetoothLeScanner?.stopScan(scanCallback ?: object : ScanCallback(){})
+                scanCallback = null
                 isScanning = false
                 Toast.makeText(context, "Scan terminé", Toast.LENGTH_SHORT).show()
             } catch (e: SecurityException) {

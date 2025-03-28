@@ -9,12 +9,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -32,30 +29,16 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Surface
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.LaunchedEffect
 import fr.isen.noemieblanchard.androidsmartdevice.objects.ScreenScanInteraction
-import android.bluetooth.le.ScanCallback
-import android.bluetooth.le.ScanResult
 import android.content.Intent
-import android.util.Log
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.MutableState
-import androidx.lifecycle.viewmodel.compose.viewModel
 import fr.isen.noemieblanchard.androidsmartdevice.DeviceControlActivity
 import fr.isen.noemieblanchard.androidsmartdevice.MainActivity
-import fr.isen.noemieblanchard.androidsmartdevice.ScanActivity
 import fr.isen.noemieblanchard.androidsmartdevice.objects.BleDevice
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import kotlin.math.absoluteValue
 
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
