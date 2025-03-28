@@ -29,7 +29,7 @@ class DeviceControlActivity : ComponentActivity() {
         val deviceName = intent.getStringExtra("DEVICE_NAME")
 
         if (deviceAddress == null || deviceName == null) {
-            finish() // Close if no device is provided
+            finish()
             return
         }
 

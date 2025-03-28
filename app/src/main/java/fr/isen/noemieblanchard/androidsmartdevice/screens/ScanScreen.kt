@@ -45,6 +45,7 @@ import android.bluetooth.le.ScanCallback
 import android.bluetooth.le.ScanResult
 import android.content.Intent
 import android.util.Log
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.MutableState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import fr.isen.noemieblanchard.androidsmartdevice.DeviceControlActivity
@@ -190,7 +191,10 @@ fun DeviceCard(device: BleDevice,  onClick: () -> Unit) {
             .padding(vertical = 8.dp)
             .clickable{ onClick() },
         shape = RoundedCornerShape(8.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xffffe0b2),
+        )
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -198,7 +202,7 @@ fun DeviceCard(device: BleDevice,  onClick: () -> Unit) {
         ) {
             Surface(
                 shape = CircleShape,
-                color = Color(0xffffe0b2),
+                color = Color(0xff1b5e20),
                 modifier = Modifier.size(40.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {

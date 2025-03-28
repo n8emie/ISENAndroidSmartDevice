@@ -23,8 +23,6 @@ import java.util.UUID
 
 class ScreenDeviceInteraction(private val context: Context) {
 
-    private var bluetoothGatt: BluetoothGatt? = null
-    private var bluetoothDevice: BluetoothDevice? = null
     private var gatt: BluetoothGatt? = null
     private var ledChar: BluetoothGattCharacteristic? = null
     var notifCharButton1: BluetoothGattCharacteristic? = null
@@ -73,7 +71,6 @@ class ScreenDeviceInteraction(private val context: Context) {
                         Log.d("BLE", "Notif bouton 1 = $notifCharButton1")
                         Log.d("BLE", "Notif bouton 3 = $notifCharButton3")
 
-                        // Enable notifications for characteristics
                         notifCharButton1?.let {
                             gatt.setCharacteristicNotification(it, true)
                             val descriptor = it.getDescriptor(UUID.fromString("00002902-0000-1000-8000-00805f9b34fb"))

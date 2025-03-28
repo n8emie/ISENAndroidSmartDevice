@@ -1,7 +1,6 @@
 package fr.isen.noemieblanchard.androidsmartdevice.screens
 
-import android.bluetooth.BluetoothDevice
-import android.os.Parcelable
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,20 +11,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import fr.isen.noemieblanchard.androidsmartdevice.R
 import fr.isen.noemieblanchard.androidsmartdevice.objects.ScreenDeviceInteraction
-import fr.isen.noemieblanchard.androidsmartdevice.objects.ScreenScanInteraction
 
 
 @Composable
@@ -62,6 +57,10 @@ fun DeviceControlScreen(interaction: ScreenDeviceInteraction) {
         Spacer(modifier = Modifier.height(16.dp))
 
         for (i in 0..2) {
+            Image(
+                painter = painterResource(if (interaction.ledStates[i]) R.drawable.bulb_off else R.drawable.bulb_on),
+                contentDescription = "LED ${i + 1}"
+            )
             Button(onClick = { interaction.toggleLed(i) }) {
                 Text(if (interaction.ledStates[i]) "Turn Off LED ${i + 1}" else "Turn On LED ${i + 1}")
             }
@@ -70,7 +69,6 @@ fun DeviceControlScreen(interaction: ScreenDeviceInteraction) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Subscribe to button notifications
         Button(onClick = { interaction.toggleNotificationsFor(interaction.notifCharButton1, !interaction.isSubscribedButton1.value) }) {
             Text(if (interaction.isSubscribedButton1.value) "Unsubscribe Button 1" else "Subscribe Button 1")
         }
@@ -83,7 +81,6 @@ fun DeviceControlScreen(interaction: ScreenDeviceInteraction) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Display button presses
         Text("Button 1 Presses: ${interaction.counterButton1.value}", fontSize = 16.sp)
         Text("Button 3 Presses: ${interaction.counterButton3.value}", fontSize = 16.sp)
     }
