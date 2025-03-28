@@ -39,12 +39,12 @@ fun DeviceControlScreen(interaction: ScreenDeviceInteraction) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(70.dp)
-                .background(Color(0xFF1976D2)),
+                .background(Color(0xff1b5e20)),
             contentAlignment = Alignment.Center
         ) {
             Text(
                 context.getString(R.string.app_name),
-                color = Color.White,
+                color = Color.Black,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold
             )
@@ -61,7 +61,6 @@ fun DeviceControlScreen(interaction: ScreenDeviceInteraction) {
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Toggle LEDs
         for (i in 0..2) {
             Button(onClick = { interaction.toggleLed(i) }) {
                 Text(if (interaction.ledStates[i]) "Turn Off LED ${i + 1}" else "Turn On LED ${i + 1}")

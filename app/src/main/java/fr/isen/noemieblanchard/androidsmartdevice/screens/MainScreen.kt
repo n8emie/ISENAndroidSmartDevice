@@ -33,7 +33,7 @@ fun MainScreen() {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(70.dp)
-                .background(Color(0xFF1976D2)),
+                .background(Color(0xff1b5e20)),
             contentAlignment = Alignment.Center
         ) {
             Text(context.getString(R.string.app_name), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
@@ -45,7 +45,7 @@ fun MainScreen() {
             text = "Bienvenue dans votre application Smart Device",
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = Color(0xFF1976D2)
+            color = Color(0xff1b5e20)
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -69,7 +69,7 @@ fun MainScreen() {
         Button(
             onClick = { val intent = Intent(context, ScanActivity::class.java)
                 context.startActivity(intent) },
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1976D2))
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xff1b5e20))
         ) {
             Text(text = "COMMENCER", color = Color.White)
         }

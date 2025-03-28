@@ -56,10 +56,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.math.absoluteValue
 
-
-
-
-
 @SuppressLint("CoroutineCreationDuringComposition")
 @Composable
 fun ScanScreen(interaction: ScreenScanInteraction) {
@@ -106,7 +102,7 @@ fun ScanScreen(interaction: ScreenScanInteraction) {
             modifier = Modifier
                 .fillMaxWidth()
                 .height(70.dp)
-                .background(Color(0xFF1976D2)),
+                .background(Color(0xff1b5e20)),
             contentAlignment = Alignment.Center
         ) {
             Text(context.getString(R.string.app_name), color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.Bold)
@@ -202,7 +198,7 @@ fun DeviceCard(device: BleDevice,  onClick: () -> Unit) {
         ) {
             Surface(
                 shape = CircleShape,
-                color = Color(0xFF90CAF9),
+                color = Color(0xffffe0b2),
                 modifier = Modifier.size(40.dp)
             ) {
                 Box(contentAlignment = Alignment.Center) {
